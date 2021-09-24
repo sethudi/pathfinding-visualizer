@@ -3,6 +3,9 @@ import React, {Component} from 'react';
 import Node from './Node/Node';
 import './PathfindingVisualizer.css';
 import {dijkstra} from '../algorithms/dijkstra';
+import {Depth_first} from '../algorithms/Depth-first';
+import {Breath_first} from '../algorithms/Breath-first';
+import ToolBar from '../Toolbar/ToolBar';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
@@ -53,6 +56,37 @@ export default class PathfindingVisualizer extends Component{
       }
     }
 
+    animateDepth_first(visitedNodesInOrder) {
+      for (let i=0; i< visitedNodesInOrder.length; i++){
+        setTimeout(()=>{
+
+          const node =visitedNodesInOrder[i];
+          const newGrid = this.state.grid.slice();
+          const newNode ={
+              ...node,
+              isVisited: true,
+          };
+          newGrid[node.row][node.col] =newNode;
+          this.setState({grid:newGrid})
+          }, 20 *i);
+      }
+    }
+    animateBreath_first(visitedNodesInOrder) {
+      for (let i=0; i< visitedNodesInOrder.length; i++){
+
+        setTimeout(()=>{
+          const node =visitedNodesInOrder[i];
+          const newGrid = this.state.grid.slice();
+          const newNode ={
+              ...node,
+              isVisited: true,
+          };
+          newGrid[node.row][node.col] =newNode;
+          this.setState({grid:newGrid})
+          }, 20 *i);
+      }
+    }
+
     visualizeDijkstra() {
         const {grid} = this.state;
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
@@ -61,15 +95,37 @@ export default class PathfindingVisualizer extends Component{
         this.animateDijkstra(visitedNodesInOrder);
         
     }
+    visualizeDepth() {
+        const {grid} = this.state;
+        const startNode = grid[START_NODE_ROW][START_NODE_COL];
+        const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+        const visitedNodesInOrder = Depth_first(grid, startNode, finishNode);
+        this.animateDepth_first(visitedNodesInOrder);
+        
+    }
+    visualizeBreath() {
+      const {grid} = this.state;
+      const startNode = grid[START_NODE_ROW][START_NODE_COL];
+      const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const visitedNodesInOrder = Breath_first(grid, startNode, finishNode);
+      this.animateBreath_first(visitedNodesInOrder);
+      
+  }
+    
 
     render(){
         const {grid, mouseIsPressed} =this.state;
         return (
             <>
-            <button onClick={() => this.visualizeDijkstra()}>
-                Visualize Dijkstra's Algorithm
-            </button>
-        
+            
+            <ToolBar
+            visualizeDijkstra ={() => this.visualizeDijkstra()}
+            visualizeDepth ={() => this.visualizeDepth()}
+            visualizeBreath ={() => this.visualizeBreath()}
+          
+            ></ToolBar>
+            <h3>Click on the grid to add a wall.</h3>
+            <h4>Walls are impenetrable, meaning that a path cannot cross through them</h4>
             <div className="grid">
                 {grid.map((row,rowIdx)=>{
                     return (
