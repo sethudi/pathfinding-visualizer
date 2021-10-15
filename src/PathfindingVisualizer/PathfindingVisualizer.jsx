@@ -5,6 +5,8 @@ import './PathfindingVisualizer.css';
 import {dijkstra} from '../algorithms/dijkstra';
 import {Depth_first} from '../algorithms/Depth-first';
 import {Breath_first} from '../algorithms/Breath-first';
+import {Astar} from '../algorithms/Astar';
+import {Greedy_Best_first} from '../algorithms/Greedy_Best_first';
 import ToolBar from '../Toolbar/ToolBar';
 
 const START_NODE_ROW = 10;
@@ -87,6 +89,38 @@ export default class PathfindingVisualizer extends Component{
       }
     }
 
+    animateBreath_Astar(visitedNodesInOrder) {
+      for (let i=0; i< visitedNodesInOrder.length; i++){
+
+        setTimeout(()=>{
+          const node =visitedNodesInOrder[i];
+          const newGrid = this.state.grid.slice();
+          const newNode ={
+              ...node,
+              isVisited: true,
+          };
+          newGrid[node.row][node.col] =newNode;
+          this.setState({grid:newGrid})
+          }, 20 *i);
+      }
+    }
+
+    animate_Greedy(visitedNodesInOrder) {
+      for (let i=0; i< visitedNodesInOrder.length; i++){
+
+        setTimeout(()=>{
+          const node =visitedNodesInOrder[i];
+          const newGrid = this.state.grid.slice();
+          const newNode ={
+              ...node,
+              isVisited: true,
+          };
+          newGrid[node.row][node.col] =newNode;
+          this.setState({grid:newGrid})
+          }, 20 *i);
+      }
+    }
+
     visualizeDijkstra() {
         const {grid} = this.state;
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
@@ -110,7 +144,21 @@ export default class PathfindingVisualizer extends Component{
       const visitedNodesInOrder = Breath_first(grid, startNode, finishNode);
       this.animateBreath_first(visitedNodesInOrder);
       
-  }
+    }
+    visualizeAstar() {
+      let {grid} = this.state;
+      const startNode = grid[START_NODE_ROW][START_NODE_COL];
+      const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const visitedNodesInOrder = Astar(grid, startNode, finishNode);
+      this.animateBreath_Astar(visitedNodesInOrder);
+    }
+    visualizeGreedy_Best_first() {
+      const {grid} = this.state;
+      const startNode = grid[START_NODE_ROW][START_NODE_COL];
+      const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const visitedNodesInOrder = Greedy_Best_first(grid, startNode, finishNode);
+      this.animate_Greedy(visitedNodesInOrder);
+    }
     
 
     render(){
@@ -122,7 +170,8 @@ export default class PathfindingVisualizer extends Component{
             visualizeDijkstra ={() => this.visualizeDijkstra()}
             visualizeDepth ={() => this.visualizeDepth()}
             visualizeBreath ={() => this.visualizeBreath()}
-          
+            visualizeAstar ={() => this.visualizeAstar()}
+            visualizeGreedy_Best_first ={() => this.visualizeGreedy_Best_first()}
             ></ToolBar>
             <h3>Click on the grid to add a wall.</h3>
             <h4>Walls are impenetrable, meaning that a path cannot cross through them</h4>

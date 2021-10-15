@@ -13,7 +13,7 @@ class Toolbar extends Component {
  
 
   render() {
-    const {visualizeDijkstra, visualizeDepth, visualizeBreath} = this.props;
+    const {visualizeDijkstra, visualizeDepth, visualizeBreath, visualizeAstar, visualizeGreedy_Best_first} = this.props;
 
     return (
       <div id="toolbar">
@@ -26,13 +26,13 @@ class Toolbar extends Component {
             <button onClick={() => visualizeBreath()}>
                  Breath-first Search
             </button>
-           {/* <button onClick={() => visualizeAstar()}>
+           <button onClick={() => visualizeAstar()}>
                  A* Search
             </button>
             <button onClick={() => visualizeGreedy_Best_first()}>
                  Greedy Best-first Search
             </button>
-            */}
+          
       </div>
     )
   }
