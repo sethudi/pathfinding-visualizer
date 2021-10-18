@@ -43,6 +43,7 @@ function helper(stacklist,grid, node){
     if (row > 0 ) {
         newnode =grid[row - 1][col]
         if (newnode.isWall !== true && newnode.isVisited !== true){
+            newnode.previousNode =node
             stacklist.push(newnode);
         }
     }
@@ -50,6 +51,7 @@ function helper(stacklist,grid, node){
     if (col < grid[0].length - 1 ){
         newnode =grid[row][col +1]
         if (newnode.isWall!==true && newnode.isVisited!==true){
+            newnode.previousNode =node
             stacklist.push(newnode)
         }
         
@@ -57,14 +59,27 @@ function helper(stacklist,grid, node){
     if (row < grid.length - 1 ){
         newnode =grid[row + 1][col]
         if (newnode.isWall!==true && newnode.isVisited !==true){
+            newnode.previousNode =node
             stacklist.push(newnode)
         }
     } 
     if (col > 0 ){
         newnode =grid[row][col - 1]
         if (newnode.isWall!==true && newnode.isVisited!==true){
+            newnode.previousNode =node
             stacklist.push(newnode)
         }
     } 
     
 }
+
+export function getNodesInShortestPathOrderBreath(finishNode){
+    const nodesInShortestPathOrder =[];
+    let currentNode = finishNode;
+    while (currentNode !== null){
+      nodesInShortestPathOrder.unshift(currentNode);
+      currentNode =currentNode.previousNode;
+    }
+    return nodesInShortestPathOrder
+  }
+	

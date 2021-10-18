@@ -2,11 +2,11 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
 import './PathfindingVisualizer.css';
-import {dijkstra} from '../algorithms/dijkstra';
-import {Depth_first} from '../algorithms/Depth-first';
-import {Breath_first} from '../algorithms/Breath-first';
-import {Astar} from '../algorithms/Astar';
-import {Greedy_Best_first} from '../algorithms/Greedy_Best_first';
+import {dijkstra,getNodesInShortestPathOrder} from '../algorithms/dijkstra';
+import {Depth_first,getNodesInShortestPathOrderDepth} from '../algorithms/Depth-first';
+import {Breath_first,getNodesInShortestPathOrderBreath} from '../algorithms/Breath-first';
+import {Astar,getNodesInShortestPathOrderAster} from '../algorithms/Astar';
+import {Greedy_Best_first,getNodesInShortestPathOrderGreedy} from '../algorithms/Greedy_Best_first';
 import ToolBar from '../Toolbar/ToolBar';
 
 const START_NODE_ROW = 10;
@@ -43,8 +43,9 @@ export default class PathfindingVisualizer extends Component{
         this.setState({mouseIsPressed: false});
       }
 
-    animateDijkstra(visitedNodesInOrder) {
+    animateDijkstra(visitedNodesInOrder, NodesInShortestPathOrder) {
       for (let i=0; i< visitedNodesInOrder.length; i++){
+       
         setTimeout(()=>{
           const node =visitedNodesInOrder[i];
           const newGrid = this.state.grid.slice();
@@ -56,24 +57,47 @@ export default class PathfindingVisualizer extends Component{
           this.setState({grid:newGrid})
           }, 20 *i);
       }
+
+      setTimeout(()=>{
+        this.animateShortestPath(NodesInShortestPathOrder);
+      },20*visitedNodesInOrder.length);
+      
     }
 
-    animateDepth_first(visitedNodesInOrder) {
-      for (let i=0; i< visitedNodesInOrder.length; i++){
+    animateShortestPath(NodesInShortestPathOrder){
+      for (let i=0; i<NodesInShortestPathOrder.length; i++){
         setTimeout(()=>{
-
-          const node =visitedNodesInOrder[i];
+          const node =NodesInShortestPathOrder[i];
           const newGrid = this.state.grid.slice();
           const newNode ={
               ...node,
-              isVisited: true,
+              isPath: true,
           };
           newGrid[node.row][node.col] =newNode;
           this.setState({grid:newGrid})
           }, 20 *i);
-      }
+        }
     }
-    animateBreath_first(visitedNodesInOrder) {
+    animateDepth_first(visitedNodesInOrder,NodesInShortestPathOrder) {
+      for (let i=0; i< visitedNodesInOrder.length; i++){
+        setTimeout(()=>{
+
+          const node =visitedNodesInOrder[i];
+          const newGrid = this.state.grid.slice();
+          const newNode ={
+              ...node,
+              isVisited: true,
+          };
+          newGrid[node.row][node.col] =newNode;
+          this.setState({grid:newGrid})
+          }, 20 *i);
+      }
+      setTimeout(()=>{
+        this.animateShortestPath(NodesInShortestPathOrder);
+      },20*visitedNodesInOrder.length);
+      
+    }
+    animateBreath_first(visitedNodesInOrder,NodesInShortestPathOrder) {
       for (let i=0; i< visitedNodesInOrder.length; i++){
 
         setTimeout(()=>{
@@ -87,9 +111,12 @@ export default class PathfindingVisualizer extends Component{
           this.setState({grid:newGrid})
           }, 20 *i);
       }
+      setTimeout(()=>{
+        this.animateShortestPath(NodesInShortestPathOrder);
+      },20*visitedNodesInOrder.length);
     }
 
-    animateBreath_Astar(visitedNodesInOrder) {
+    animateBreath_Astar(visitedNodesInOrder,NodesInShortestPathOrder) {
       for (let i=0; i< visitedNodesInOrder.length; i++){
 
         setTimeout(()=>{
@@ -103,9 +130,12 @@ export default class PathfindingVisualizer extends Component{
           this.setState({grid:newGrid})
           }, 20 *i);
       }
+      setTimeout(()=>{
+        this.animateShortestPath(NodesInShortestPathOrder);
+      },20*visitedNodesInOrder.length);
     }
 
-    animate_Greedy(visitedNodesInOrder) {
+    animate_Greedy(visitedNodesInOrder,NodesInShortestPathOrder) {
       for (let i=0; i< visitedNodesInOrder.length; i++){
 
         setTimeout(()=>{
@@ -119,6 +149,9 @@ export default class PathfindingVisualizer extends Component{
           this.setState({grid:newGrid})
           }, 20 *i);
       }
+      setTimeout(()=>{
+        this.animateShortestPath(NodesInShortestPathOrder);
+      },20*visitedNodesInOrder.length);
     }
 
     visualizeDijkstra() {
@@ -126,7 +159,9 @@ export default class PathfindingVisualizer extends Component{
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
         const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
-        this.animateDijkstra(visitedNodesInOrder);
+        const NodesInShortestPathOrder =getNodesInShortestPathOrder(finishNode);
+        this.animateDijkstra(visitedNodesInOrder,NodesInShortestPathOrder);
+        
         
     }
     visualizeDepth() {
@@ -134,7 +169,8 @@ export default class PathfindingVisualizer extends Component{
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
         const visitedNodesInOrder = Depth_first(grid, startNode, finishNode);
-        this.animateDepth_first(visitedNodesInOrder);
+        const NodesInShortestPathOrder =getNodesInShortestPathOrderDepth(finishNode);
+        this.animateDepth_first(visitedNodesInOrder,NodesInShortestPathOrder);
         
     }
     visualizeBreath() {
@@ -142,7 +178,8 @@ export default class PathfindingVisualizer extends Component{
       const startNode = grid[START_NODE_ROW][START_NODE_COL];
       const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
       const visitedNodesInOrder = Breath_first(grid, startNode, finishNode);
-      this.animateBreath_first(visitedNodesInOrder);
+      const NodesInShortestPathOrder =getNodesInShortestPathOrderBreath(finishNode);
+      this.animateBreath_first(visitedNodesInOrder, NodesInShortestPathOrder);
       
     }
     visualizeAstar() {
@@ -150,14 +187,16 @@ export default class PathfindingVisualizer extends Component{
       const startNode = grid[START_NODE_ROW][START_NODE_COL];
       const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
       const visitedNodesInOrder = Astar(grid, startNode, finishNode);
-      this.animateBreath_Astar(visitedNodesInOrder);
+      const NodesInShortestPathOrder =getNodesInShortestPathOrderAster(finishNode);
+      this.animateBreath_Astar(visitedNodesInOrder,NodesInShortestPathOrder);
     }
     visualizeGreedy_Best_first() {
       const {grid} = this.state;
       const startNode = grid[START_NODE_ROW][START_NODE_COL];
       const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
       const visitedNodesInOrder = Greedy_Best_first(grid, startNode, finishNode);
-      this.animate_Greedy(visitedNodesInOrder);
+      const NodesInShortestPathOrder =getNodesInShortestPathOrderGreedy(finishNode);
+      this.animate_Greedy(visitedNodesInOrder,NodesInShortestPathOrder);
     }
     
 
@@ -180,12 +219,13 @@ export default class PathfindingVisualizer extends Component{
                     return (
                         <div key={rowIdx}>
                             {row.map((node,nodeIdx)=>{
-                                const {row, col, isFinish, isStart, isWall,isVisited} = node;
+                                const {row, col, isFinish, isStart, isWall,isVisited,isPath} = node;
                                 
                                 return(
                                     <Node 
                                         key={nodeIdx}
                                         col={col}
+                                        isPath={isPath}
                                         isVisited={isVisited}
                                         isFinish={isFinish}
                                         isStart={isStart}
@@ -229,6 +269,7 @@ export default class PathfindingVisualizer extends Component{
           isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
           distance: Infinity,
           isVisited: false,
+          isPath: false,
           isWall: false,
           previousNode: null,
         };

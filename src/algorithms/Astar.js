@@ -47,7 +47,7 @@ function aStarAlgorithm(startRow, startCol, endRow, endCol, nodes,visitedNodesIn
             }
 				
 				
-			neighbor.cameFrom =currentMinDistanceNode
+			neighbor.previousNode =currentMinDistanceNode
 			neighbor.distance = tenativeDistanceToNeighbor
 			neighbor.estimatedDistanceToEnd = tenativeDistanceToNeighbor + calculateManhattanDistance(neighbor, endNode)
 			
@@ -112,6 +112,16 @@ function initializeNodes(graph){
     }
 		
 }
+
+export function getNodesInShortestPathOrderAster(finishNode){
+    const nodesInShortestPathOrder =[];
+    let currentNode = finishNode;
+    while (currentNode !== null){
+      nodesInShortestPathOrder.unshift(currentNode);
+      currentNode =currentNode.previousNode;
+    }
+    return nodesInShortestPathOrder
+  }
 	
 
 

@@ -41,7 +41,7 @@ function  Greedy(startRow, startCol, endRow, endCol, nodes,visitedNodesInOrder){
                 continue;
             }
 				
-			neighbor.cameFrom =currentMinDistanceNode
+			neighbor.previousNode =currentMinDistanceNode
 			neighbor.estimatedDistanceToEnd =  calculateManhattanDistance(neighbor, endNode)
 			
 			nodesToVisit.push(neighbor);
@@ -103,7 +103,18 @@ function initializeNodes(graph){
     }
 		
 }
+
+export function getNodesInShortestPathOrderGreedy(finishNode){
+    const nodesInShortestPathOrder =[];
+    let currentNode = finishNode;
+    while (currentNode !== null){
+      nodesInShortestPathOrder.unshift(currentNode);
+      currentNode =currentNode.previousNode;
+    }
+    return nodesInShortestPathOrder
+  }
 	
+
 
 
 

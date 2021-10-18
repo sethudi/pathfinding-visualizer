@@ -20,6 +20,7 @@ export default class Node extends Component{
         onMouseUp,
         row,
         isVisited,
+        isPath,
       } = this.props;
 
         const extraClassName =isFinish
@@ -28,6 +29,8 @@ export default class Node extends Component{
             ? 'node-start'
             : isWall
             ? 'node-wall'
+            : isPath
+            ? 'node-path'
             : isVisited
             ? 'node-visited'
             :'';
